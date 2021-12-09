@@ -1,0 +1,28 @@
+plugins {
+    id 'java-gradle-plugin'
+}
+
+gradlePlugin {
+    plugins {
+        homework {
+            id = 'homework'
+            implementationClass = 'org.example.gradle.homework.HomeWorkPlugin'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'javax.mail:javax.mail-api:1.6.2'
+    runtimeOnly 'com.sun.mail:javax.mail:1.6.2'
+
+    implementation 'commons-io:commons-io:2.7'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:3.5.0.201409260305-r'
+}
+

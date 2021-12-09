@@ -1,0 +1,23 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+rootProject.name = "Homework"
+include ':app'
+
+if (file('samples').exists()) {
+    file('samples').eachFile {
+        if (!it.isDirectory()) {
+            return
+        }
+        def path = ':samples:' + it.name
+        include(path)
+        project(path).name = it.name
+    }
+}
