@@ -73,12 +73,18 @@ public class MainActivity extends AppCompatActivity {
         executor.submit(() -> {
             final String baseUrl = "http://res.xingcheng.me/service/";
 
+            final SimpleMessageNetworkLoader loader = new SimpleMessageNetworkLoader(baseUrl);
+            final MessageFactory factory = new MessageFactory(baseUrl);
+            final SimpleMessageJsonParser parser = new SimpleMessageJsonParser(factory);
+
             try {
                 //TODO
                 // 1. 通过GET请求，从http://res.xingcheng.me/service/api/messages 拿到json数据
                 // 2. 拿到json后，解析并创建IMMessage对象，并通知UI更新
-                final List<IMMessage> newMessages = new ArrayList<>();
 
+                final String data = loader.loadMessages();
+                final List<IMMessage> newMessages;
+                newMessages = parser.parseData(data);
                 final Message message = handler.obtainMessage(GET_MESSAGES);
                 message.obj = newMessages;
                 handler.sendMessage(message);
@@ -95,6 +101,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+/*
+    如果用的是共享的线程池，onDestroy时不可以shutdown。那就应该记录所有的异步任务，在onDestroy时dispose
+
+    private final List<Future<?>> disposables = new ArrayList<>();
+    disposables.add(executor.submit(() -> {...}));
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (Future<?> disposable : disposables) {
+            disposable.cancel(true);
+        }
+        handler.removeCallbacksAndMessages(null);
+    }
+*/
 
     @Override
     protected void onDestroy() {
